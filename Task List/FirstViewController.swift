@@ -8,8 +8,18 @@
 
 import UIKit
 
-class FirstViewController: UIViewController {
-
+class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell : UITableViewCell = UITableViewCell(style: UITableViewCell.CellStyle.subtitle, reuseIdentifier: "test")
+        
+        var _ : UILabel!
+        cell.textLabel?.text = taskMgr.tasks[indexPath.row].name
+        cell.detailTextLabel?.text = taskMgr.tasks[indexPath.row].desc
+        return cell
+    }
+    
+    @IBOutlet var tableTasks : UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -19,7 +29,26 @@ class FirstViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        tableTasks.reloadData()
+    }
+    
 
-
+    // UI Table View Datasource
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return taskMgr.tasks.count
+    }
+    
+    
+    // UITableView Delegate
+    private func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCell.EditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if (editingStyle == UITableViewCell.EditingStyle.delete) {
+            taskMgr.tasks.remove(at: indexPath.row)
+            tableTasks.reloadData()
+        }
+    }
+    
 }
 
